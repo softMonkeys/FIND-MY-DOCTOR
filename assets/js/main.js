@@ -1,3 +1,173 @@
+async function handleContactSubmit(e) {
+    e.preventDefault();
+    const form = document.getElementById('contactForm');
+    const status = document.getElementById('cf-status');
+    const btn = form.querySelector('button[type="submit"]');
+
+    // mirror email into hidden replyto field
+    document.getElementById('cf-email-hidden').value = document.getElementById('cf-email').value;
+
+    btn.disabled = true;
+    btn.textContent = 'Sending…';
+
+    try {
+        const res = await fetch(form.action, {
+            method: 'POST',
+            body: new FormData(form),
+            headers: {'Accept': 'application/json'}
+        });
+
+        if (res.ok) {
+            form.reset();
+            btn.style.display = 'none';
+            status.style.display = 'block';
+            status.style.background = 'rgba(41,171,226,0.12)';
+            status.style.border = '1px solid rgba(41,171,226,0.3)';
+            status.style.color = 'var(--sky)';
+            status.textContent = '✓ Message sent — we\'ll be in touch shortly.';
+        } else {
+            throw new Error('Server error');
+        }
+    } catch {
+        btn.disabled = false;
+        btn.textContent = 'Send Message →';
+        status.style.display = 'block';
+        status.style.background = 'rgba(220,50,50,0.1)';
+        status.style.border = '1px solid rgba(220,50,50,0.3)';
+        status.style.color = '#f87171';
+        status.textContent = 'Something went wrong — please email us directly at info@findmydr.ca';
+    }
+}
+
+
+function toggleDrawer() {
+    var d = document.getElementById('mobileDrawer');
+    if (d.classList.contains('open')) {
+        d.classList.remove('open');
+    } else {
+        d.classList.add('open');
+    }
+}
+
+function goTo(page) {
+    document.getElementById('mobileDrawer').classList.remove('open');
+    showPage(page);
+    return false;
+}
+
+// Attach hamburger events after DOM ready
+document.addEventListener('DOMContentLoaded', function () {
+    var btn = document.getElementById('hamburgerBtn');
+    if (btn) {
+        btn.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleDrawer();
+        });
+        btn.addEventListener('touchend', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleDrawer();
+        });
+    }
+    // Drawer links
+    var links = document.querySelectorAll('#mobileDrawer a');
+    links.forEach(function (a) {
+        a.addEventListener('click', function (e) {
+            e.preventDefault();
+            var page = this.getAttribute('data-page');
+            goTo(page);
+        });
+        a.addEventListener('touchend', function (e) {
+            e.preventDefault();
+            var page = this.getAttribute('data-page');
+            goTo(page);
+        });
+    });
+});
+
+function syncHamburger() {
+    if (window.innerWidth > 900) {
+        document.getElementById('mobileDrawer').classList.remove('open');
+    }
+}
+
+window.addEventListener('resize', syncHamburger);
+
+function setSteps(a) {
+    ["s1", "s2", "s3", "s4"].forEach((s, i) => {
+        const el = document.getElementById(s);
+        el.className = "ep-s";
+        if (i < a - 1) el.classList.add("done"); else if (i === a - 1) el.classList.add("active");
+    });
+}
+
+// Page switcher — show one page at a time
+function showPage(pageName) {
+    // Update sections
+    document.querySelectorAll('section[data-page]').forEach(s => {
+        s.classList.toggle('active', s.dataset.page === pageName);
+    });
+    // Update nav active state
+    document.querySelectorAll('.nav-links a[data-nav]').forEach(a => {
+        a.classList.toggle('active', a.dataset.nav === pageName);
+    });
+    // Scroll to top
+    window.scrollTo({top: 0, behavior: 'instant'});
+}
+
+// Pillar click — toggle active state on click, only one active at a time
+document.addEventListener('click', function (e) {
+    var pillar = e.target.closest('.hiw-pillar');
+    if (!pillar) return;
+    var wasActive = pillar.classList.contains('active');
+    // Clear all
+    document.querySelectorAll('.hiw-pillar').forEach(p => p.classList.remove('active'));
+    // Toggle: if it was already active, leave all cleared; otherwise activate this one
+    if (!wasActive) pillar.classList.add('active');
+});
+setSteps(1);
+
+// Force background video playback (handles browsers that block autoplay)
+(function () {
+    var v = document.getElementById("p1BgVideo");
+    if (!v) return;
+    v.muted = true;
+    v.playsInline = true;
+    v.defaultMuted = true;
+    v.setAttribute("muted", "");
+    var tryPlay = function () {
+        var p = v.play();
+        if (p !== undefined) {
+            p.catch(function () {
+                // If still blocked, attempt on first user interaction
+                var resume = function () {
+                    v.play().catch(function () {
+                    });
+                    document.removeEventListener("click", resume);
+                    document.removeEventListener("touchstart", resume);
+                    document.removeEventListener("keydown", resume);
+                    document.removeEventListener("scroll", resume);
+                };
+                document.addEventListener("click", resume, {once: true});
+                document.addEventListener("touchstart", resume, {once: true});
+                document.addEventListener("keydown", resume, {once: true});
+                document.addEventListener("scroll", resume, {once: true});
+            });
+        }
+    };
+    if (v.readyState >= 2) {
+        tryPlay();
+    } else {
+        v.addEventListener("loadeddata", tryPlay, {once: true});
+        v.addEventListener("canplay", tryPlay, {once: true});
+    }
+    // Retry once after window load in case the source was slow to negotiate
+    window.addEventListener("load", function () {
+        setTimeout(tryPlay, 200);
+    });
+})();
+
 let extOpen = false;
 
 function toggleExt() {
@@ -22,14 +192,6 @@ function closeExt() {
 function showView(id) {
     document.querySelectorAll(".ep-view").forEach(v => v.classList.remove("active"));
     document.getElementById(id).classList.add("active");
-}
-
-function setSteps(a) {
-    ["s1", "s2", "s3", "s4"].forEach((s, i) => {
-        const el = document.getElementById(s);
-        el.className = "ep-s";
-        if (i < a - 1) el.classList.add("done"); else if (i === a - 1) el.classList.add("active");
-    });
 }
 
 function openAndMatch() {
