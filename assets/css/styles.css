@@ -2497,6 +2497,11 @@ footer {
     font-weight: 500;
 }
 
+/* Hide mobile drawer on desktop by default */
+#mobileDrawer {
+    display: none !important;
+}
+
 @media (max-width: 900px) {
     .nav, .p1-content, #page2, #page3, footer {
         padding-left: 1.5rem;
