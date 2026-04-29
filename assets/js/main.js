@@ -211,7 +211,59 @@ function doManual() {
     const c = document.getElementById("afCard");
     c.style.display = "none";
     setTimeout(() => {
+        const input = document.getElementById('mInp');
+
+        const container = document.getElementById('vManual');
+        if (!container) return;
+
+        const cardsDiv = container.querySelector('.af-card');
+        if (!cardsDiv) return;
+
+        const searchedName = input ? input.value.trim() : '';
+        const matches = findMatchesByName(searchedName);
+        _lastManualMatches = matches; // Store matches for potential later use (e.g., selection)
+
+        if (matches && matches.length > 0) {
+            cardsDiv.innerHTML = matches.map((s, i) => {
+                const isBest = i === 0;
+                const waitLabel = s.wait ? '⏱ ' + s.wait : '⏱ Contact clinic';
+                const cityLabel = '📍 ' + (s.city || 'BC');
+                const faxLabel = s.fax ? '📠 ' + s.fax : (s.phone ? '📞 ' + s.phone : '');
+                const subSpec = (s.specialty ? s.specialty.split(':')[0] : s.category) || s.category;
+
+                return `<div class="spec-card${isBest ? ' best' : ''}">
+            ${isBest ? '<div class="best-badge spec-rec">⭐ Recommended</div>' : ''}
+            <div class="scard-name spec-name">${s.name}</div>
+            <div class="scard-sub spec-sub">${subSpec}</div>
+            ${s.interested ? '<div style="font-size:0.63rem;color:var(--muted);margin-bottom:0.35rem;">' + s.interested.substring(0, 80) + '</div>' : ''}
+            <div class="scard-meta spec-meta">
+              <span class="${isBest ? 'cg' : 'ca'}">${waitLabel}</span>
+              <span class="${isBest ? 'cg' : 'ca'}">${cityLabel}</span>
+              ${faxLabel ? '<span class="cm">' + faxLabel + '</span>' : ''}
+            </div>
+            ${s.hours ? '<div style="font-size:0.62rem;color:var(--muted);margin-top:0.25rem;">🕐 ' + s.hours + '</div>' : ''}
+            <button style="margin-bottom: 1rem" class="sel-btn ${isBest ? 'sel-best' : 'sel-std'}" onclick="selectDocFromManual(${i})">Select &amp; Send Referral →</button>
+          </div>`;
+            }).join('');
+
+        } else {
+            // Show no match message
+            cardsDiv.innerHTML = '<div style="padding:1rem;text-align:center;font-size:0.8rem;color:var(--muted);">No specialists found in the BC directory for this specialty. See AI search below ...</div>' +
+                `<div class="spec-card best">
+            <div class="best-badge spec-rec">⭐ AI Searched</div>
+            <div class="scard-name spec-name">Dr. Sarah Kim</div>
+            <div class="scard-sub spec-sub">dermatology</div>
+            <div class="scard-meta spec-meta">
+              <span class="cg">contact clinic</span>
+              <span class="'cg'">Vancouver</span>
+              <span class="cm">778-883-2696</span>
+            </div>
+            <div style="font-size:0.62rem;color:var(--muted);margin-top:0.25rem;">🕐 2 days</div>
+          </div>`;
+        }
+
         c.style.display = "block";
+
     }, 900);
 }
 
@@ -1162,6 +1214,7 @@ function findMatches(oscarSpecialty, reasonText) {
 
 // Store last matches globally for index-based selection
 let _lastMatches = [];
+let _lastManualMatches = [];
 
 function renderMatchCards(matches, specialty) {
     _lastMatches = matches;
@@ -1171,7 +1224,7 @@ function renderMatchCards(matches, specialty) {
     const lbl = document.getElementById('resLbl');
     if (lbl) lbl.textContent = 'Best matches — ' + specialty + ' · BC';
 
-    const cardsDiv = container.querySelector('.scards') || container.querySelector('.spec-cards');
+    const cardsDiv = container.querySelector('.scards');
     if (!cardsDiv) return;
 
     if (!matches || matches.length === 0) {
@@ -1204,6 +1257,12 @@ function renderMatchCards(matches, specialty) {
 
 function selectDocByIndex(i) {
     const s = _lastMatches[i];
+    if (!s) return;
+    selectDocFromDir(s);
+}
+
+function selectDocFromManual(i) {
+    const s = _lastManualMatches[i];
     if (!s) return;
     selectDocFromDir(s);
 }
@@ -1275,3 +1334,9 @@ function runMatch() {
     }, 2200);
 }
 
+// ── FIND MATCHES BY NAME FUNCTION ──────────────────────────────────────
+function findMatchesByName(searchedName) {
+    const name = (searchedName || "").toLowerCase().trim();
+    const candidates = BC_SPECIALISTS.filter(s => s.name.toLowerCase().includes(name));
+    return candidates.length > 0 ? candidates : false;
+}
