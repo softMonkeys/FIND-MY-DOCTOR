@@ -254,11 +254,11 @@ function doManual() {
             <div class="scard-name spec-name">Dr. Sarah Kim</div>
             <div class="scard-sub spec-sub">dermatology</div>
             <div class="scard-meta spec-meta">
-              <span class="cg">contact clinic</span>
-              <span class="'cg'">Vancouver</span>
-              <span class="cm">778-883-2696</span>
+              <span class="cg">⏱ Contact clinic</span>
+              <span class="'cg'">📍Vancouver</span>
+              <span class="cm">📞 778-883-2696</span>
             </div>
-            <div style="font-size:0.62rem;color:var(--muted);margin-top:0.25rem;">🕐 2 days</div>
+            <div style="font-size:0.62rem;color:var(--muted);margin-top:0.25rem;">🕐 Mon-Fri 8:00 AM-5:00 PM</div>
           </div>`;
         }
 
