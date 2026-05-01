@@ -11,6 +11,8 @@
           rel="stylesheet">
     <link rel="stylesheet" href="assets/css/styles.css">
 
+    <link rel="icon" type="image/x-icon" href="assets/images/logo.png">
+
 </head>
 <body>
 
@@ -686,47 +688,7 @@
                                     Vancouver
                                 </div>
                                 <div class="scards">
-                                    <div class="scard best"
-                                         onclick="selectDoc(null,'Dr. A. Chen','Dermatology · Moles &amp; Melanoma','4 days','0.8 km','(604) 555-0100')">
-                                        <div class="best-badge">⭐ Recommended</div>
-                                        <div class="scard-name">Dr. A. Chen</div>
-                                        <div class="scard-sub">Dermatology · Moles &amp; Melanoma
-                                        </div>
-                                        <div class="scard-meta"><span
-                                                class="cg">⏱ 4 days</span><span
-                                                class="cg">📍 0.8 km</span><span class="cm">📠 (604) 555-0100</span>
-                                        </div>
-                                        <button class="sel-btn sel-best"
-                                                onclick="selectDoc(event,'Dr. A. Chen','Dermatology · Moles','4 days','0.8 km','(604) 555-0100')">
-                                            Select &amp; Submit →
-                                        </button>
-                                    </div>
-                                    <div class="scard"
-                                         onclick="selectDoc(null,'Dr. B. Patel','Dermatology · Pigmentation','7 days','2.1 km','(604) 555-0200')">
-                                        <div class="scard-name">Dr. B. Patel</div>
-                                        <div class="scard-sub">Dermatology · Pigmentation</div>
-                                        <div class="scard-meta"><span
-                                                class="ca">⏱ 7 days</span><span
-                                                class="ca">📍 2.1 km</span><span class="cm">📠 (604) 555-0200</span>
-                                        </div>
-                                        <button class="sel-btn sel-std"
-                                                onclick="selectDoc(event,'Dr. B. Patel','Dermatology · Pigmentation','7 days','2.1 km','(604) 555-0200')">
-                                            Select &amp; Submit →
-                                        </button>
-                                    </div>
-                                    <div class="scard"
-                                         onclick="selectDoc(null,'Dr. C. Müller','Dermatology · General Skin','10 days','3.4 km','(604) 555-0300')">
-                                        <div class="scard-name">Dr. C. Müller</div>
-                                        <div class="scard-sub">Dermatology · General Skin</div>
-                                        <div class="scard-meta"><span
-                                                class="cm">⏱ 10 days</span><span
-                                                class="cm">📍 3.4 km</span><span class="cm">📠 (604) 555-0300</span>
-                                        </div>
-                                        <button class="sel-btn sel-std"
-                                                onclick="selectDoc(event,'Dr. C. Müller','Dermatology','10 days','3.4 km','(604) 555-0300')">
-                                            Select &amp; Submit →
-                                        </button>
-                                    </div>
+                                    <!-- Populated dynamically by main.js renderMatchCards() -->
                                 </div>
                                 <div class="manual-tog">
                                     <span class="manual-lnk"
@@ -746,21 +708,7 @@
                                 </div>
                                 <div class="af-card" id="afCard">
                                     <div class="af-badge">⚡ Retrieved from directory</div>
-                                    <div class="af-name">Dr. Sarah Kim — Dermatology</div>
-                                    <div class="af-row"><span class="af-lbl">Phone:</span><span
-                                            class="af-val">(604) 555-0198</span></div>
-                                    <div class="af-row"><span class="af-lbl">Fax:</span><span
-                                            class="af-val">(604) 555-0199</span></div>
-                                    <div class="af-row"><span class="af-lbl">Address:</span><span
-                                            class="af-val">456 Medical Blvd, Vancouver BC V6T 1Z4</span>
-                                    </div>
-                                    <div class="af-row"><span class="af-lbl">Clinic:</span><span
-                                            class="af-val">Skin Health Centre · Mon–Fri 8 am–5 pm</span>
-                                    </div>
-                                    <button class="af-send"
-                                            onclick="selectDoc(null,'Dr. Sarah Kim','Dermatology','~1 week','Vancouver','(604) 555-0199')">
-                                        Submit Referral →
-                                    </button>
+                                    <!-- Content populated dynamically by doManual() in main.js -->
                                 </div>
                                 <span class="back-lnk" onclick="showView('vResults')">← Return to recommendations</span>
                             </div>
@@ -778,10 +726,10 @@
                                     <div class="sms-txt" id="smsTxt">
                                         <strong>Find My Doctor</strong><br>
                                         A referral has been submitted on your behalf to:<br>
-                                        <strong>Dr. A. Chen — Dermatology</strong><br>
-                                        Clinic: 123 Health Ave, Vancouver BC<br>
-                                        Estimated wait: 4 days<br>
-                                        Enquiries: (604) 555-0100
+                                        <strong id="smsDocName">Specialist</strong><br>
+                                        <span id="smsClinic">Vancouver, BC</span><br>
+                                        Estimated wait: <span id="smsWait">Contact clinic</span><br>
+                                        Enquiries: <span id="smsPhone">See referral</span>
                                     </div>
                                 </div>
                                 <div class="emr-logged">
